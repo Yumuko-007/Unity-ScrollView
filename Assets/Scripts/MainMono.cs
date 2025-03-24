@@ -23,6 +23,7 @@ public class MainMono : MonoBehaviour
         LoopList.InitLoop(100, ScrollFunc);
         
         LoopHorizonList.InitLoop(100, ScrollHorizonFunc);
+        LoopHorizonList.onValueChanged.AddListener(OnScoll);
     }
 
     private ILoopObject ScrollFunc(int index)
@@ -38,7 +39,11 @@ public class MainMono : MonoBehaviour
         item.SetData(index);
         return item;
     }
-    
+
+    private void OnScoll(Vector2 pos)
+    {
+        
+    }
     
 
     // Update is called once per frame
@@ -47,11 +52,17 @@ public class MainMono : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             LoopList.ShowAtIndex(50);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
             LoopHorizonList.ShowAtIndex(50);
         }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.LogError($"当前横向可见范围内第一个全显示的Item序号是 {LoopHorizonList.GetFirstIndexInView()}");
+            Debug.LogError($"当前横向可见范围内最后一个全显示的Item序号是 {LoopHorizonList.GetLastIndexInView()}");
+            
+            Debug.LogError($"当前纵向可见范围内第一个全显示的Item序号是 {LoopList.GetFirstIndexInView()}");
+            Debug.LogError($"当前纵向可见范围内最后一个全显示的Item序号是 {LoopList.GetLastIndexInView()}");
+        }
+        
     }
 }

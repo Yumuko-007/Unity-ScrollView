@@ -294,8 +294,8 @@ namespace Game
                 {
                     return LoopObjectStatus.UpOut;
                 }
-                else if ((_viewportItem.leftDownCornerInContent.y >= down) &&
-                         (_viewportItem.rightUpCornerInContent.y <= up))
+                else if ((_viewportItem.leftDownCornerInContent.y <= down) &&
+                         (_viewportItem.rightUpCornerInContent.y >= up))
                 {
                     return LoopObjectStatus.Full;
                 }

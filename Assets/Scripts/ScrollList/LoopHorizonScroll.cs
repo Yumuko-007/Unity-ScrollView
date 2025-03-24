@@ -11,6 +11,9 @@
 //  AddAtBottom => 在底部添加一定数量的数据
 //  ShowAtIndex => 指定那个索引数据显示出来
 //  GetLoopItemShowStatus => 获取指定位置对象的显示状态
+//  GetObjectInView => 获取当前可见项列表
+//  GetFirstIndexInView => 获取可见范围内第一个对象的序号
+//  GetLastIndexInView => 获取可见范围内最后一个对象的序号
 // **************************************************************
 
 using System;
@@ -396,6 +399,50 @@ namespace Game
         {
             LoopItem item = GetLoopItem(index);
             return item == null ? LoopObjectStatus.NotShow : item.GetObjectViewStatus();
+        }
+        
+        /// <summary>
+        /// 获取当前可见项列表
+        /// </summary>
+        /// <returns></returns>
+        public List<LoopItem> GetObjectInView()
+        {
+            List<LoopItem> result = new List<LoopItem>();
+            result.AddRange(_items);
+            return result;
+        }
+        
+        /// <summary>
+        /// 获取可见范围内第一个对象的序号
+        /// </summary>
+        /// <returns></returns>
+        public int GetFirstIndexInView(LoopObjectStatus type = LoopObjectStatus.Full)
+        {
+            foreach (var item in _items)
+            {
+                if (item.GetObjectViewStatus() == type)
+                {
+                    return item.Index;
+                }
+            }
+            return 0;
+        }
+        
+        /// <summary>
+        /// 获取可见范围内最后一个对象的序号
+        /// </summary>
+        /// <param name="type">是全部可见还是部分可见</param>
+        /// <returns></returns>
+        public int GetLastIndexInView(LoopObjectStatus type = LoopObjectStatus.Full)
+        {
+            for (int i = _items.Count -1; i > 0; i--)
+            {
+                if (_items[i].GetObjectViewStatus() == type)
+                {
+                    return _items[i].Index;
+                }
+            }
+            return 0;
         }
 
         /// <summary>
