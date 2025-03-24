@@ -425,7 +425,7 @@ namespace Game
         /// <returns></returns>
         public int GetLastIndexInView(LoopObjectStatus type = LoopObjectStatus.Full)
         {
-            for (int i = _items.Count -1; i > 0; i--)
+            for (int i = _items.Count -1; i >= 0; i--)
             {
                 if (_items[i].GetObjectViewStatus() == type)
                 {
