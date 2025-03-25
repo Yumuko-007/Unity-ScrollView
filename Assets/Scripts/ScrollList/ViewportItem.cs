@@ -27,12 +27,12 @@ namespace Game
             rectTransform.GetWorldCorners(_corners);
             var screenPos = RectTransformUtility.WorldToScreenPoint(uiCamera, _corners[0]);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(conetentRectTrans, screenPos, uiCamera,
-                out Vector2 localPos);
+                out var localPos);
             leftDownCornerInContent = localPos;
 
             screenPos = RectTransformUtility.WorldToScreenPoint(uiCamera, _corners[2]);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(conetentRectTrans, screenPos, uiCamera,
-                out Vector2 localPos2);
+                out var localPos2);
             rightUpCornerInContent = localPos2;
         }
     }

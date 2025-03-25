@@ -16,16 +16,18 @@ namespace Game
 {
     public class UnitPool<T> : IUnitPool where T : UnitBase, new()
     {
-        public int Count => _units.Count;        // 数量
-        public IReadOnlyList<T> Units => _units;      // 已经分配对象访问接口
+        public int Count => _units.Count; // 数量
+        public IReadOnlyList<T> Units => _units; // 已经分配对象访问接口
 
-        protected T baseUnit;        // 母体对象
-        private T _singleUnit;                                // 母体cell
-        private List<T> _units = new List<T>();      // 已经分配的对象
-        private Queue<T> _poolUnits = new Queue<T>();         // 对象池
-        private int _capacity = 2000;              // 对象池容量
+        protected T baseUnit; // 母体对象
+        private T _singleUnit; // 母体cell
+        private List<T> _units = new(); // 已经分配的对象
+        private Queue<T> _poolUnits = new(); // 对象池
+        private int _capacity = 2000; // 对象池容量
 
-        private UnitPool() { }
+        private UnitPool()
+        {
+        }
 
         /// <summary>
         /// 初始化 isPrefabUnit 是否是挂在ui上的unit
@@ -52,6 +54,7 @@ namespace Game
                 _singleUnit = baseUnit;
                 _singleUnit.Initial(this);
             }
+
             return _singleUnit;
         }
 
@@ -72,10 +75,7 @@ namespace Game
 
             newUnit.gameObject.SetActive(true);
             newUnit.rectTransform.SetParent(rectTrans);
-            if (isCoonectToPool)
-            {
-                _units.Add(newUnit);
-            }
+            if (isCoonectToPool) _units.Add(newUnit);
             newUnit.SpwanCall();
             return newUnit;
         }
@@ -95,13 +95,9 @@ namespace Game
             {
                 unit.gameObject.SetActive(false);
                 if (_poolUnits.Contains(unit))
-                {
                     Debug.LogError("对象被回收多次！！！，不影响后续逻辑，但需要处理！！！");
-                }
                 else
-                {
                     _poolUnits.Enqueue(unit as T);
-                }
             }
         }
 
@@ -131,12 +127,9 @@ namespace Game
         /// <summary>
         /// 遍历
         /// </summary>
-        public void Foreach(System.Action<T> action)
+        public void Foreach(Action<T> action)
         {
-            foreach (var unit in _units)
-            {
-                action.Invoke(unit);
-            }
+            foreach (var unit in _units) action.Invoke(unit);
         }
 
         /// <summary>
@@ -146,17 +139,14 @@ namespace Game
         {
             try
             {
-                foreach (var unit in _units)
-                {
-                    SetToPool(unit);
-                }
+                foreach (var unit in _units) SetToPool(unit);
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
             }
+
             _units.Clear();
         }
     }
-
 }

@@ -19,7 +19,7 @@ namespace Game
 
         #region 自身保留的相对于Content的显示区域
 
-        public Rect localRect { private set; get; } = new Rect();
+        public Rect localRect { private set; get; } = new();
         private Vector2 sizeDelta;
         public Vector2 localPosition => rectTransform.localPosition; // 左上角的位置
 
@@ -71,25 +71,21 @@ namespace Game
             if (rectTransform != null)
             {
                 // 中心位置+中心点偏移
-                Vector2 localPosition = GetContentLocalPosition(localRect);
+                var localPosition = GetContentLocalPosition(localRect);
 
                 if (CurLoopType == LoopObjectType.Vertical)
-                {
                     if (endPosition == null || localPosition.y != endPosition.Value.y)
                     {
                         endPosition = localPosition;
                         loopObject.SetLoopObjectLocalPosition(localPosition);
                     }
-                }
 
                 if (CurLoopType == LoopObjectType.Horizontal)
-                {
                     if (endPosition == null || localPosition.x != endPosition.Value.x)
                     {
                         endPosition = localPosition;
                         loopObject.SetLoopObjectLocalPosition(localPosition);
                     }
-                }
             }
         }
 
@@ -98,7 +94,7 @@ namespace Game
         /// </summary>
         private Vector2 GetContentLocalPosition(Rect rect)
         {
-            Vector2 localPosition = rect.center;
+            var localPosition = rect.center;
             localPosition += (rectTransform.pivot - new Vector2(0.5f, 0.5f)) * sizeDelta;
             localPosition -= new Vector2((sizeDelta.x - rectTransform.rect.width) / 2, 0); // 本来在中间，这条是把它移动到左边
             return localPosition;
@@ -111,18 +107,12 @@ namespace Game
         {
             if (rectTransform != null)
             {
-                if (CurLoopType == LoopObjectType.Vertical)
-                {
-                    sizeDelta.y = rectTransform.rect.height;
-                }
+                if (CurLoopType == LoopObjectType.Vertical) sizeDelta.y = rectTransform.rect.height;
 
-                if (CurLoopType == LoopObjectType.Horizontal)
-                {
-                    sizeDelta.x = rectTransform.rect.width;
-                }
+                if (CurLoopType == LoopObjectType.Horizontal) sizeDelta.x = rectTransform.rect.width;
             }
 
-            Vector3 position = Vector3.zero;
+            var position = Vector3.zero;
             if (atTop)
             {
                 if (CurLoopType == LoopObjectType.Vertical)
@@ -234,10 +224,10 @@ namespace Game
             {
                 if (CurLoopType == LoopObjectType.Vertical)
                 {
-                    float height = rectTransform.rect.height;
+                    var height = rectTransform.rect.height;
                     if (height != sizeDelta.y)
                     {
-                        float delta = height - sizeDelta.y;
+                        var delta = height - sizeDelta.y;
                         sizeDelta.y = height;
                         localRect = new Rect(localRect.position - new Vector2(0, delta), sizeDelta);
                     }
@@ -245,10 +235,10 @@ namespace Game
 
                 if (CurLoopType == LoopObjectType.Horizontal)
                 {
-                    float width = rectTransform.rect.width;
+                    var width = rectTransform.rect.width;
                     if (width != sizeDelta.x)
                     {
-                        float delta = width - sizeDelta.x;
+                        var delta = width - sizeDelta.x;
                         sizeDelta.x = width;
                         localRect = new Rect(localRect.position + new Vector2(delta, 0), sizeDelta);
                     }
@@ -262,14 +252,10 @@ namespace Game
         public void AddLocalPosition(float add)
         {
             if (CurLoopType == LoopObjectType.Vertical)
-            {
                 localRect = new Rect(localRect.position + new Vector2(0, add), sizeDelta);
-            }
 
             if (CurLoopType == LoopObjectType.Horizontal)
-            {
                 localRect = new Rect(localRect.position + new Vector2(add, 0), sizeDelta);
-            }
 
             SetRectPosition();
         }
@@ -279,51 +265,35 @@ namespace Game
         /// </summary>
         public LoopObjectStatus GetObjectViewStatus()
         {
-            float up = localRect.yMax;
-            float down = localRect.yMin;
-            float left = localRect.xMin;
-            float right = localRect.xMax;
+            var up = localRect.yMax;
+            var down = localRect.yMin;
+            var left = localRect.xMin;
+            var right = localRect.xMax;
 
             if (CurLoopType == LoopObjectType.Vertical)
             {
                 if (down > _viewportItem.rightUpCornerInContent.y)
-                {
                     return LoopObjectStatus.DownOut;
-                }
                 else if (_viewportItem.leftDownCornerInContent.y > up)
-                {
                     return LoopObjectStatus.UpOut;
-                }
-                else if ((_viewportItem.leftDownCornerInContent.y <= down) &&
-                         (_viewportItem.rightUpCornerInContent.y >= up))
-                {
+                else if (_viewportItem.leftDownCornerInContent.y <= down &&
+                         _viewportItem.rightUpCornerInContent.y >= up)
                     return LoopObjectStatus.Full;
-                }
                 else
-                {
                     return LoopObjectStatus.Part;
-                }
             }
 
             if (CurLoopType == LoopObjectType.Horizontal)
             {
                 if (left > _viewportItem.rightUpCornerInContent.x)
-                {
                     return LoopObjectStatus.RightOut;
-                }
                 else if (_viewportItem.leftDownCornerInContent.x > right)
-                {
                     return LoopObjectStatus.LeftOut;
-                }
-                else if ((_viewportItem.rightUpCornerInContent.x >= right) &&
-                         (_viewportItem.leftDownCornerInContent.x <= left))
-                {
+                else if (_viewportItem.rightUpCornerInContent.x >= right &&
+                         _viewportItem.leftDownCornerInContent.x <= left)
                     return LoopObjectStatus.Full;
-                }
                 else
-                {
                     return LoopObjectStatus.Part;
-                }
             }
 
             return LoopObjectStatus.NotShow;
@@ -336,8 +306,8 @@ namespace Game
         /// </summary>
         public float GetPaddingToTopViewSize()
         {
-            float padding = Index == 0 ? _padding.top : _spacingNum;
-            float up = _viewportItem.rightUpCornerInContent.y - padding;
+            var padding = Index == 0 ? _padding.top : _spacingNum;
+            var up = _viewportItem.rightUpCornerInContent.y - padding;
             return up - localRect.yMax;
         }
 
@@ -348,8 +318,8 @@ namespace Game
         /// </summary>
         public float GetPaddingToBottomViewSize(int total)
         {
-            float padding = Index == (total - 1) ? _padding.bottom : _spacingNum;
-            float down = _viewportItem.leftDownCornerInContent.y + padding;
+            var padding = Index == total - 1 ? _padding.bottom : _spacingNum;
+            var down = _viewportItem.leftDownCornerInContent.y + padding;
             return localRect.yMin - down;
         }
 
@@ -360,8 +330,8 @@ namespace Game
         /// </summary>
         public float GetPaddingToLeftViewSize()
         {
-            float padding = Index == 0 ? _padding.left : _spacingNum;
-            float left = _viewportItem.leftDownCornerInContent.x + padding;
+            var padding = Index == 0 ? _padding.left : _spacingNum;
+            var left = _viewportItem.leftDownCornerInContent.x + padding;
             return localRect.xMin - left;
         }
 
@@ -372,8 +342,8 @@ namespace Game
         /// </summary>
         public float GetPaddingToRightViewSize(int total)
         {
-            float padding = Index == (total - 1) ? _padding.right : _spacingNum;
-            float right = _viewportItem.rightUpCornerInContent.x - padding;
+            var padding = Index == total - 1 ? _padding.right : _spacingNum;
+            var right = _viewportItem.rightUpCornerInContent.x - padding;
             return right - localRect.xMax;
         }
 
@@ -388,8 +358,8 @@ namespace Game
         {
             Gizmos.color = Color.red;
 
-            Vector3 worldMin = _content.TransformPoint(localRect.min);
-            Vector3 worldMax = _content.TransformPoint(localRect.max);
+            var worldMin = _content.TransformPoint(localRect.min);
+            var worldMax = _content.TransformPoint(localRect.max);
 
             Gizmos.DrawLine(worldMin, new Vector2(worldMin.x, worldMax.y));
             Gizmos.DrawLine(new Vector2(worldMin.x, worldMax.y), worldMax);

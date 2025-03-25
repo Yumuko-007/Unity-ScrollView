@@ -17,15 +17,13 @@ namespace Game
         public static object CreatePrivate(Type type)
         {
             var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
-            for (int i = 0; i < constructors.Length; i++)
+            for (var i = 0; i < constructors.Length; i++)
             {
                 var ctor = constructors[i];
                 var ps = ctor.GetParameters();
-                if ((ps == null) || (ps.Length == 0))
-                {
-                    return ctor.Invoke(null);
-                }
+                if (ps == null || ps.Length == 0) return ctor.Invoke(null);
             }
+
             Debug.LogError(type.Name + " - 未定义无参私有构造函数");
             return null;
         }
@@ -33,18 +31,15 @@ namespace Game
         public static object CreatePublic(Type type)
         {
             var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
-            for (int i = 0; i < constructors.Length; i++)
+            for (var i = 0; i < constructors.Length; i++)
             {
                 var ctor = constructors[i];
                 var ps = ctor.GetParameters();
-                if (((ps == null) || (ps.Length == 0)))
-                {
-                    return ctor.Invoke(null);
-                }
+                if (ps == null || ps.Length == 0) return ctor.Invoke(null);
             }
+
             Debug.LogError(type.Name + " - 未定义无参私有构造函数");
             return null;
         }
-
     }
 }

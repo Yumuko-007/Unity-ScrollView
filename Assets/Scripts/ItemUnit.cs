@@ -1,5 +1,5 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -10,18 +10,22 @@ namespace Game
     {
         public Image Image;
         public TextMeshProUGUI TMPro;
-        
+
         /// <summary>
         /// 初始化
         /// </summary>
         protected override void OnInitial()
         {
-
         }
 
-        protected override void OnSpwan() { }
-        protected override void OnDespwan() { }
-        
+        protected override void OnSpwan()
+        {
+        }
+
+        protected override void OnDespwan()
+        {
+        }
+
         public void SetData(int index)
         {
             TMPro.text = $"{index}";
