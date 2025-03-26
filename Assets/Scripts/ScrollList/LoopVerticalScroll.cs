@@ -38,6 +38,7 @@ namespace Game
         private int _objectCount; // 数据数量
         private RectOffset _padding; // 布局编辑间隙
         private float _spacingNum; // 数据间的间隙
+        private TextAnchor _childAligin; //对齐方式
 
         private List<LoopItem> _items = new(); // 显示列表
         private Queue<LoopItem> _pool = new(); // 对象池
@@ -80,6 +81,7 @@ namespace Game
                     verticalLayoutGroup.enabled = false;
                     _padding = verticalLayoutGroup.padding;
                     _spacingNum = verticalLayoutGroup.spacing;
+                    _childAligin = verticalLayoutGroup.childAlignment;
                 }
                 else
                 {
@@ -441,7 +443,7 @@ namespace Game
             if (_items.Count >= 400) Debug.LogError("数据异常！！！！");
 
             var item = _pool.Count > 0 ? _pool.Dequeue() : new LoopItem();
-            item.Init(content, _viewportItem, idx, _padding, _spacingNum, LoopObjectType.Vertical);
+            item.Init(content, _viewportItem, idx, _padding, _spacingNum, _childAligin, LoopObjectType.Vertical);
             var isFirst = _items.Count == 0 || _items[0].Index < idx;
             // 这里考虑捕获异常
             try

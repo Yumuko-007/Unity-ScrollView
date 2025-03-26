@@ -14,6 +14,7 @@ namespace Game
 
         private RectOffset _padding;
         private float _spacingNum;
+        private TextAnchor _childAligin; //对齐方式
 
         private ViewportItem _viewportItem;
 
@@ -28,7 +29,7 @@ namespace Game
         private Vector3? endPosition; // 最终位置，因为可能会做动画，所以这里需要记录一下最终位置
 
 
-        public void Init(RectTransform content, ViewportItem viewport, int idx, RectOffset padding, float spacing,
+        public void Init(RectTransform content, ViewportItem viewport, int idx, RectOffset padding, float spacing, TextAnchor childAligin,
             LoopObjectType type)
         {
             Index = idx;
@@ -36,6 +37,7 @@ namespace Game
             _viewportItem = viewport;
             _padding = padding;
             _spacingNum = spacing;
+            _childAligin = childAligin;
             sizeDelta = new Vector2(viewport.rectTransform.rect.width,
                 viewport.rectTransform.rect.height / 4); // 随便默认一个大小
             endPosition = null;
