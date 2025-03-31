@@ -40,8 +40,8 @@ namespace Game
         private float _spacingNum; // 数据间的间隙
         private TextAnchor _childAligin; //对齐方式
 
-        private List<LoopItem> _items = new(); // 显示列表
-        private Queue<LoopItem> _pool = new(); // 对象池
+        private List<LoopHorizonItem> _items = new(); // 显示列表
+        private Queue<LoopHorizonItem> _pool = new(); // 对象池
         private ViewportItem _viewportItem;
         private float contentSize => Mathf.Min(50000, viewport.rect.height * 100); // content大小
         private bool _isDraging = false;
@@ -130,7 +130,7 @@ namespace Game
         /// <summary>
         /// 获取制定位置的循环对象
         /// </summary>
-        private LoopItem GetLoopItem(int index)
+        private LoopHorizonItem GetLoopItem(int index)
         {
             for (var i = 0; i < _items.Count; i++)
                 if (_items[i].Index == index)
@@ -436,12 +436,12 @@ namespace Game
         /// <summary>
         /// 生成对象
         /// </summary>
-        private LoopItem Spwan(int idx)
+        private LoopHorizonItem Spwan(int idx)
         {
             if (_items.Count >= 400) Debug.LogError("数据异常！！！！");
 
-            var item = _pool.Count > 0 ? _pool.Dequeue() : new LoopItem();
-            item.Init(content, _viewportItem, idx, _padding, _spacingNum, _childAligin, LoopObjectType.Horizontal);
+            var item = _pool.Count > 0 ? _pool.Dequeue() : new LoopHorizonItem();
+            item.Init(content, _viewportItem, idx, _padding, _spacingNum, _childAligin);
             var isFirst = _items.Count == 0 || _items[0].Index < idx;
             // 这里考虑捕获异常
             try
@@ -461,7 +461,7 @@ namespace Game
         /// <summary>
         /// 回收
         /// </summary>
-        private void Despwan(LoopItem item)
+        private void Despwan(LoopHorizonItem item)
         {
             _pool.Enqueue(item);
             _items.Remove(item);
