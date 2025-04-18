@@ -43,7 +43,7 @@ namespace Game
         private List<LoopHorizonItem> _items = new(); // 显示列表
         private Queue<LoopHorizonItem> _pool = new(); // 对象池
         private ViewportItem _viewportItem;
-        private float contentSize => Mathf.Min(50000, viewport.rect.height * 100); // content大小
+        private float contentSize => Mathf.Min(50000, viewport.rect.width * 100); // content大小
         private bool _isDraging = false;
         private bool _isClamping = false; // 首尾超出边界，是否要回弹的标志位
 
