@@ -62,7 +62,7 @@ namespace Game
         /// <summary>
         /// 计算位置坐标
         /// </summary>
-        protected Vector2 GetContentLocalPosition(Rect rect)
+        protected virtual Vector2 GetContentLocalPosition(Rect rect)
         {
             var localPosition = rect.center;
             localPosition += (rectTransform.pivot - new Vector2(0.5f, 0.5f)) * sizeDelta;
