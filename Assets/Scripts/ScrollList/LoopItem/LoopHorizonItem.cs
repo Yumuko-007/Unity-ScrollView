@@ -90,6 +90,9 @@ namespace Game
         /// </summary>
         public override void SetLocalPositionAtDown(Rect behindRect)
         {
+            // var offset = new Vector2(sizeDelta.x + _spacingNum, 0);
+            // localRect = new Rect(behindRect.position + offset, sizeDelta);
+            // SetRectPosition();
             var offset = new Vector2( _spacingNum, 0);
             localRect = new Rect(new Vector2(behindRect.xMax, behindRect.yMin) + offset, sizeDelta);
             SetRectPosition();

@@ -10,6 +10,7 @@ public class MainMono : MonoBehaviour
 {
     public LoopVerticalScroll _loopList;
     public LoopHorizonScroll _loopHorizonList;
+    public LoopVGridScroll _LoopVGridList;
     public ILoopScroll LoopList;
     public ILoopScroll LoopHorizonList;
     public UnitPool<ItemUnit> UnitPool;
@@ -30,6 +31,8 @@ public class MainMono : MonoBehaviour
 
         LoopHorizonList.InitLoop(100, ScrollHorizonFunc);
         LoopHorizonList.AddValueChangedListener(OnScoll);
+        
+        _LoopVGridList.InitLoop(100, ScrollVGridFunc);
     }
 
     private ILoopObject ScrollFunc(int index)
@@ -42,6 +45,13 @@ public class MainMono : MonoBehaviour
     private ILoopObject ScrollHorizonFunc(int index)
     {
         var item = UnitPool2.Spwan(LoopHorizonList.GetContent());
+        item.SetData(index);
+        return item;
+    }
+    
+    private ILoopObject ScrollVGridFunc(int index)
+    {
+        var item = UnitPool2.Spwan(_LoopVGridList.content);
         item.SetData(index);
         return item;
     }
