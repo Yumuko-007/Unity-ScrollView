@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -19,12 +18,13 @@ namespace Game
     public class LoopVGridScroll : ScrollRect
     {
         [SerializeField] private Camera UICamera;
-        private Func<int, ILoopObject> _itemShowAction;
+        private Func<GridData, ILoopObject> _itemShowAction;
         private int _objectCount;               // 数据数量
         private Queue<LoopGridLine> _linePool = new Queue<LoopGridLine>();
         private List<LoopGridLine> _showLines = new List<LoopGridLine>();       // 当期现实的行
         private LoopGridLayout _layout;
-        private int lineCount => ((_objectCount + _layout.constraintCount - 1) / _layout.constraintCount);
+        private int constraintCount => _layout.constraintCount;
+        private int lineCount => ((_objectCount + constraintCount - 1) / constraintCount);
 
         protected override void Awake()
         {
@@ -37,7 +37,7 @@ namespace Game
         /// atTop ： 是否从底部开始填满
         /// 以startIndex为第一个分配位置，然后后面自动填满和回收
         /// </summary>
-        public void InitLoop(int count, Func<int, ILoopObject> showAction, bool atTop = true)
+        public void InitLoop(int count, Func<GridData, ILoopObject> showAction, bool atTop = true)
         {
             if (_layout == null)
             {
@@ -51,17 +51,16 @@ namespace Game
 
                 _layout = new LoopGridLayout(ly);
                 ly.enabled = false;
-                Destroy(ly);
                 if (csf != null)
                 {
-                    Destroy(csf);
+                    csf.enabled = false;
                 }
             }
 
             var padding = _layout.padding;
             var spacingNum = _layout.spacing;
             var cellSize = _layout.cellSize;
-            var constraintCount = _layout.constraintCount;
+            //var constraintCount = _layout.constraintCount;
 
             verticalNormalizedPosition = atTop ? 1 : 0;
             _objectCount = count;
@@ -76,7 +75,7 @@ namespace Game
                 _linePool.Enqueue(item);
             }
             _showLines.Clear();
-            CreateGameObjectObject();
+            CreateGameObject();
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace Game
         /// </summary>
         private Vector3 _contentPosition = Vector3.zero;
         private Vector3[] _viewCorners = new Vector3[4];
-        private void CreateGameObjectObject()
+        private void CreateGameObject()
         {
             _contentPosition = content.localPosition;
 
@@ -98,16 +97,20 @@ namespace Game
             // 计算上面超框数量
             float length = Mathf.Abs(rightUp.y);               // 距离顶部的现实区域
             length = Mathf.Max(0, length - _layout.padding.top);
-            int noShowLine = (int)(length / (_layout.spacing.y + _layout.cellSize.y));      // 不显示的数量
+            int noShowLine = (int)(length / (_layout.spacing.y + _layout.cellSize.y));
 
             // 计算显示数据+上面超框数量
             float length2 = Mathf.Abs(leftDown.y);
             length2 = Mathf.Max(0, length2 - _layout.padding.top);
-            int upShowLine = (int)(length2 / (_layout.spacing.y + _layout.cellSize.y));      // 不显示的数量
+            int upShowLine = (int)(length2 / (_layout.spacing.y + _layout.cellSize.y));     // 因为后面半个也要显示，索性都给补1
 
-            int start = Mathf.Max(0, noShowLine - 1);
-            int end = start + (upShowLine - noShowLine);
-
+            // int start = Mathf.Max(0, noShowLine);
+            // int end = start + (upShowLine - noShowLine);
+            // 从上往下拖拽的安全范围，避免提前回收
+            int bufferLineCount = 2;
+            int start = Mathf.Max(0, noShowLine - bufferLineCount);
+            int end = Mathf.Min(lineCount - 1, upShowLine + bufferLineCount);
+            
             // 回收不在显示范围内的
             for (int i = _showLines.Count - 1; i >= 0; i--)
             {
@@ -121,7 +124,7 @@ namespace Game
                 }
             }
 
-            if(_showLines.Count > 100)
+            if (_showLines.Count > 100)
             {
                 Debug.LogError("数据异常!!!!");
                 return;
@@ -133,7 +136,7 @@ namespace Game
             {
                 if (!ContainsLine(i))
                 {
-                    LoopGridLine line = SpwanLine(i);
+                    LoopGridLine line = SpawnLine(i);
                     _showLines.Add(line);
                 }
             }
@@ -157,11 +160,12 @@ namespace Game
         /// <summary>
         /// 生成对象
         /// </summary>
-        private LoopGridLine SpwanLine(int lineNum)
+        private LoopGridLine SpawnLine(int lineNum)
         {
             LoopGridLine line = _linePool.Count > 0 ? _linePool.Dequeue() : new LoopGridLine();
-            int constraintCount = _layout.constraintCount;
-            int count = lineNum >= lineCount - 1 ? (lineCount % constraintCount) : constraintCount;
+            int startIndex = lineNum * constraintCount;
+            int remain = _objectCount - startIndex;
+            int count = Mathf.Min(constraintCount, remain);
             line.InitLine(content, _layout, lineNum, count, _itemShowAction);
             return line;
         }
@@ -173,7 +177,7 @@ namespace Game
             {
                 return;
             }
-            CreateGameObjectObject();
+            CreateGameObject();
         }
 
 #if UNITY_EDITOR

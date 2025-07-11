@@ -15,10 +15,12 @@ public class MainMono : MonoBehaviour
     public ILoopScroll LoopHorizonList;
     public UnitPool<ItemUnit> UnitPool;
     public UnitPool<ItemUnit> UnitPool2;
+    public UnitPool<ItemUnit> UnitPool3;
 
     public ItemUnit Unit;
 
     public ItemUnit Unit2;
+    public ItemUnit Unit3;
 
     // Start is called before the first frame update
     private void Start()
@@ -27,11 +29,11 @@ public class MainMono : MonoBehaviour
         LoopHorizonList = _loopHorizonList as ILoopScroll;
         UnitPool = UIHelper.RegisterUnitPool(Unit);
         UnitPool2 = UIHelper.RegisterUnitPool(Unit2);
+        UnitPool3 = UIHelper.RegisterUnitPool(Unit3);
         LoopList.InitLoop(100, ScrollFunc);
 
         LoopHorizonList.InitLoop(100, ScrollHorizonFunc);
         LoopHorizonList.AddValueChangedListener(OnScoll);
-        
         _LoopVGridList.InitLoop(100, ScrollVGridFunc);
     }
 
@@ -49,10 +51,10 @@ public class MainMono : MonoBehaviour
         return item;
     }
     
-    private ILoopObject ScrollVGridFunc(int index)
+    private ILoopObject ScrollVGridFunc(GridData gridData)
     {
-        var item = UnitPool2.Spwan(_LoopVGridList.content);
-        item.SetData(index);
+        var item = UnitPool3.Spwan(_LoopVGridList.content);
+        item.SetData(gridData.index);
         return item;
     }
 
@@ -77,6 +79,11 @@ public class MainMono : MonoBehaviour
 
             Debug.LogError($"当前纵向可见范围内第一个全显示的Item序号是 {LoopList.GetFirstIndexInView()}");
             Debug.LogError($"当前纵向可见范围内最后一个全显示的Item序号是 {LoopList.GetLastIndexInView()}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _LoopVGridList.InitLoop(Random.Range(1,100), ScrollVGridFunc);   
         }
     }
 }

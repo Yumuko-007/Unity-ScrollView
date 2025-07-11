@@ -14,6 +14,15 @@ using UnityEngine.UI;
 
 namespace Game
 {
+    public struct GridData
+    {
+        public int line;                // 第几行
+        public int column;              // 第几列
+        public int totalColumn;         // 总共几列
+
+        public int index => line * totalColumn + column;        // 第几个索引
+    }
+
     public class LoopGridLine
     {
         public int lineNum;
@@ -32,7 +41,7 @@ namespace Game
         /// <summary>
         /// 初始化行
         /// </summary>
-        public void InitLine(RectTransform content, LoopGridLayout layoutGroup, int lineNum, int count, Func<int, ILoopObject> itemShowAction)
+        public void InitLine(RectTransform content, LoopGridLayout layoutGroup, int lineNum, int count, Func<GridData, ILoopObject> itemShowAction)
         {
             this.content = content;
             this.lineNum = lineNum;
@@ -65,9 +74,9 @@ namespace Game
         /// <summary>
         /// 生成对象
         /// </summary>
-        public ILoopObject Spwan(int offset, Func<int, ILoopObject> itemShowAction)
+        public ILoopObject Spwan(int offset, Func<GridData, ILoopObject> itemShowAction)
         {
-            return itemShowAction.Invoke(offset);
+            return itemShowAction.Invoke(new GridData() { column = offset, line = lineNum, totalColumn = constraintCount});
         }
 
         /// <summary>
@@ -79,6 +88,7 @@ namespace Game
             {
                 item.Despawn();
             }
+            items.Clear();
         }
     }
 }
